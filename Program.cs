@@ -15,13 +15,20 @@ namespace CertTool
 				Options.Usage();
 				return;
 			}
-
 			if (!Options.Parse(argv)) {
 				return;
 			}
 
 			switch(Options.Action) {
 				case ActionKind.File: FileCertInfo(); break;
+			}
+		}
+
+		static void Print(StringBuilder sb)
+		{
+			if (sb.Length > 0) {
+				Log.Message(sb.ToString());
+				sb.Clear();
 			}
 		}
 
@@ -35,20 +42,20 @@ namespace CertTool
 				var folders = Directory.EnumerateFiles(Options.InputFileFolder,Options.FilePattern,opts);
 				foreach(var f in folders) {
 					PrintOneCertInfo(sb, f);
+					Print(sb);
 				}
 			}
 			else {
 				PrintOneCertInfo(sb,Options.InputFileFolder);
+				Print(sb);
 			}
-
-			Log.Message(sb.ToString());
 		}
 
 		static void PrintOneCertInfo(StringBuilder sb, string file)
 		{
-			X509Certificate wild;
+			X509ContentType type;
 			try {
-				wild = X509Certificate.CreateFromSignedFile(file);
+				type = X509Certificate2.GetCertContentType(file);
 			}
 			catch {
 				if (!Options.MuteCertErrors) {
@@ -56,6 +63,8 @@ namespace CertTool
 				}
 				return;
 			}
+
+			var wild = X509Certificate.CreateFromSignedFile(file);
 			using var cert = new X509Certificate2(wild);
 
 			if (Options.ExportCert) {
@@ -65,6 +74,7 @@ namespace CertTool
 			}
 
 			sb.ND(0,"File",file);
+			sb.ND(0,"Type",type.ToString());
 
 			var policy = new X509ChainPolicy();
 			if (Options.ValidateCertOffline) {
@@ -88,8 +98,8 @@ namespace CertTool
 			foreach (var elem in chain.ChainElements)
 			{
 				PrintChainElement(sb, elem);
-				sb.WT();
 				if (!Options.IncludeChain) { break; } //only print the first one
+				sb.WT();
 			}
 		}
 
