@@ -3,7 +3,23 @@
 
 # override commands which have pesky $path issues
 7z() {
-	"/c/Program Files/7-Zip/7z.exe" "$@"
+	if [[ -f "/c/Program Files/7-Zip/7z.exe" ]]; then
+		"/c/Program Files/7-Zip/7z.exe" "$@"
+	elif [[ -f "/mnt/c/Program Files/7-Zip/7z.exe" ]]; then
+		"/mnt/c/Program Files/7-Zip/7z.exe" "$@"
+	else
+		7z "$@"
+	fi
+}
+
+dotnet() {
+	if [[ -f "/c/Program Files/dotnet/dotnet.EXE" ]]; then
+		"/c/Program Files/dotnet/dotnet.EXE" "$@"
+	elif [[ -f "/mnt/c/Program Files/dotnet/dotnet.EXE" ]]; then
+		"/mnt/c/Program Files/dotnet/dotnet.EXE" "$@"
+	else
+		dotnet "$@"
+	fi
 }
 
 _toLower() {
@@ -15,7 +31,7 @@ _getrid() {
 		echo "win-x64"
 	elif [[ "$OSTYPE" == "win32" ]]; then
 		echo "win-x64"
-	elif [[ "$OSTYPE" == "linuix-gnu" ]]; then
+	elif [[ "$OSTYPE" == "linux-gnu" ]]; then
 		echo "linux-x64"
 	else
 		echo ""
