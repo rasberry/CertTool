@@ -50,7 +50,7 @@ namespace CertTool
 			sb.ND(1,"Wildcard specifier","Matches");
 			sb.ND(2,"* (asterisk)"," Zero or more characters in that position");
 			sb.ND(2,"? (question mark)"," Zero or one character in that position");
-			sb.WT(1,@"Characters other than the wildcard are literal characters. For example, the string ""*t"" searches for all names in ending with the letter ""t"". "". The searchPattern string ""s*"" searches for all names in path beginning with the letter ""s""");
+			sb.WT(1,@"Characters other than the wildcard are literal characters. For example, the string ""*t"" searches for all names in ending with the letter ""t"". The searchPattern string ""s*"" searches for all names in path beginning with the letter ""s""");
 			Log.Message(sb.ToString());
 		}
 
